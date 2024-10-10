@@ -32,33 +32,38 @@ function displayResults(data) {
     }
 }
 
-function displayChart(data) {
-    // Input: data (object) - contains the following keys:
-    //        - documents (list) - list of documents
-    //        - indices (list) - list of indices   
-    //        - similarities (list) - list of similarities
-    // TODO: Implement function to display chart here
-    //       There is a canvas element in the HTML file with the id 'similarity-chart'
+let chart; // Declare chart variable outside the function
 
+function displayChart(data) {
     let ctx = document.getElementById('similarity-chart').getContext('2d');
-    let chart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: data.indices.map(i => `Document ${i}`),
-            datasets: [{
-                label: 'Cosine Similarity',
-                data: data.similarities,
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                borderColor: 'rgba(75, 192, 192, 1)',
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
+
+    // Check if the chart already exists
+    if (chart) {
+        // Update the existing chart
+        chart.data.labels = data.indices.map(i => `Document ${i}`);
+        chart.data.datasets[0].data = data.similarities;
+        chart.update(); // Update the chart
+    } else {
+        // Create a new chart instance
+        chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: data.indices.map(i => `Document ${i}`),
+                datasets: [{
+                    label: 'Cosine Similarity',
+                    data: data.similarities,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
                 }
             }
-        }
-    });
+        });
+    }
 }
